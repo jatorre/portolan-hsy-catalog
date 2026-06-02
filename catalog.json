@@ -11,7 +11,6 @@
   },
   "portolan:contributions": {
     "via": "github",
-    "sovereign": false,
     "repo": "https://github.com/jatorre/portolan-hsy-catalog",
     "issues_url": "https://github.com/jatorre/portolan-hsy-catalog/issues",
     "accepts": ["issue", "pull_request"],
