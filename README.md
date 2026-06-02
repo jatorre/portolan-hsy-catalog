@@ -1,62 +1,90 @@
 # Portolan catalog — Helsinki Region (HSY)
 
-**The repository *is* the catalog.** This is a [Portolan](https://github.com/portolan-sdi/portolan)
-spatial-data infrastructure node published as nothing more than static files in a git repo,
-served over **GitHub Pages**. No server, no database, no REST catalog endpoint, no credentials —
-just open files (STAC + Apache Iceberg + GeoParquet) that any modern engine can read directly
-over HTTPS.
+A [Portolan](https://github.com/portolan-sdi/portolan) spatial-data infrastructure node where
+**the git repository is the catalog's source**, and a bucket is its serving layer.
+
+- **This repo is the source of truth** — STAC metadata + the Apache Iceberg table files
+  (`metadata.json`, manifests, GeoParquet). All normal, collision-free file paths. You
+  contribute data or fix metadata the way you contribute to software: **open an issue or a PR.**
+- **On every merge, a GitHub Action publishes to an object-storage bucket** — it mirrors the
+  data files and *generates* the Apache Iceberg REST catalog (`/v1/config`, `/v1/.../namespaces`,
+  `/v1/.../tables`) as object keys. That bucket is then a fully static, server-less Iceberg
+  catalog you can **`ATTACH`** from DuckDB *or* Snowflake.
 
 It holds one dataset from **Helsinki Region Environmental Services (HSY)**: `seuturamava_kortteli`
 — per-plan-block land-use category and unused building-rights reserve (SeutuRAMAVA), across
 Espoo / Vantaa / Kauniainen.
 
-## Layout
+## Read it — two ways, no server in either
 
-```
-catalog.json                                  STAC Catalog — the directory
-items/seuturamava_kortteli.json               STAC Item — metadata, bbox, semantics, data href
-data/v2/hsy_zoning/
-  metadata/v1.metadata.json                   Apache Iceberg table metadata
-  metadata/snap-*-manifest-list.avro          Iceberg manifest list
-  metadata/snap-*-manifest.avro               Iceberg manifest
-  data/hsy_zoning.parquet                     GeoParquet data (WKB + bbox)
-```
-
-## Query it directly with DuckDB
-
-The Iceberg table is read straight from its metadata file over HTTPS — no catalog server:
+**1. `ATTACH` the catalog endpoint** (works in DuckDB and Snowflake):
 
 ```sql
 INSTALL iceberg; LOAD iceberg; INSTALL httpfs; LOAD httpfs; INSTALL spatial; LOAD spatial;
 SET geometry_always_xy = true;
 
-SELECT kunta, korttunnus,
-       laskvar_ak AS unused_apartment_rights_m2,
-       laskvar_t  AS unused_industrial_rights_m2,
-       ST_AsText(ST_GeomFromWKB(geom_wkb)) AS geom
-FROM iceberg_scan('https://jatorre.github.io/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json')
-WHERE laskvar_ak > 0
-LIMIT 5;
+ATTACH 'hsy' (TYPE iceberg,
+  ENDPOINT 'https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog',
+  AUTHORIZATION_TYPE 'none');
+
+SELECT kunta, count(*) AS blocks, sum(laskvar_ak) AS unused_apartment_rights_m2
+FROM hsy.v2.hsy_zoning
+GROUP BY kunta ORDER BY blocks DESC;
 ```
 
-Discover it the Portolan way — read [`catalog.json`](https://jatorre.github.io/portolan-hsy-catalog/catalog.json),
-follow the item link, take the asset `data.href`, and `iceberg_scan()` it.
+**2. `iceberg_scan()` a dataset's metadata file directly** (no catalog needed):
 
-## Contributing — closing the loop
+```sql
+SELECT kunta, korttunnus, laskvar_ak
+FROM iceberg_scan('https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json')
+WHERE laskvar_ak > 0 LIMIT 5;
+```
 
-Found a data or metadata error, or want to improve this catalog? **Open an issue or a pull
-request on this repository.** Because the catalog is a git repo, contributing to the *data*
-works exactly like contributing to *software*: a PR that updates the Iceberg files or the STAC
-metadata, reviewed and merged by the maintainer, with full version history.
+Or discover it the Portolan way: read [`catalog.json`](catalog.json) → the item → take the
+asset's `portolan:iceberg_endpoint` (to `ATTACH`) or `data.href` (to `iceberg_scan`).
 
-> ⚠️ **Interim, not sovereign.** GitHub Pages is US-hosted (Fastly CDN). This repo demonstrates
-> the *repo-as-catalog* model; it is **not** a sovereign deployment. The sovereign form is the
-> identical static files hosted on European infrastructure (e.g. UpCloud object storage, or a
-> self-hosted Forgejo/GitLab Pages on EU infra) — same bytes, different host.
+## Why the bucket, and not GitHub Pages?
+
+The Iceberg REST catalog needs the same path to be **both a resource and a container**:
+`/v1/sdi/namespaces` returns the namespace *list*, while `/v1/sdi/namespaces/v2` is a child of it.
+On **object storage** the keyspace is flat — no problem. On a **filesystem** (and git is a
+filesystem, and GitHub Pages serves a committed git tree) you can't have a file `namespaces`
+*and* a directory `namespaces/`. So the REST catalog is **generated to the bucket**, never stored
+in git — which is exactly why `ATTACH` works against the bucket but couldn't from Pages.
+
+## Layout
+
+```
+catalog.json                              STAC Catalog (source)
+items/seuturamava_kortteli.json           STAC Item — metadata, bbox, semantics, endpoints
+data/v2/hsy_zoning/                        Apache Iceberg table (source files)
+  metadata/v1.metadata.json, *.avro
+  data/hsy_zoning.parquet
+tools/publish.py                          generates the REST catalog + pushes to the bucket
+.github/workflows/publish.yml             runs publish.py on every merge
+```
+
+## Publishing (what the Action does)
+
+```bash
+MC_TARGET=upcloud/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog \
+PUBLIC_BASE=https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog \
+python tools/publish.py
+```
+
+CI needs two repo secrets — `UPCLOUD_ACCESS_KEY`, `UPCLOUD_SECRET_KEY` — scoped to write only
+this bucket prefix.
+
+## Sovereignty
+
+GitHub (repo + Action runner) is US-hosted; the **bucket** is the part that matters for serving,
+and here it is EU object storage (UpCloud 🇫🇮). The same repo can publish to any S3-compatible
+bucket — on-prem MinIO, another EU provider — by changing two values. Hosting is a choice;
+the catalog is portable.
 
 ## Part of a federation
 
-This catalog is one child of the Portolan Helsinki *catalog of catalogs*:
+One child of the Portolan Helsinki *catalog of catalogs*:
 `https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/catalog/stac.json`
 
 Data: HSY, licensed CC-BY-4.0.

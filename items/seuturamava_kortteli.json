@@ -29,11 +29,13 @@
   },
   "assets": {
     "data": {
-      "href": "https://jatorre.github.io/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json",
+      "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json",
       "type": "application/vnd.apache.iceberg+json",
       "roles": ["data"],
-      "title": "Apache Iceberg table (static files) — read with DuckDB iceberg_scan()",
-      "portolan:access": "iceberg_scan"
+      "title": "Apache Iceberg table — iceberg_scan() this metadata file, or ATTACH the catalog endpoint",
+      "portolan:access": "iceberg_scan",
+      "portolan:iceberg_table": "v2.hsy_zoning",
+      "portolan:iceberg_endpoint": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog"
     }
   },
   "links": [

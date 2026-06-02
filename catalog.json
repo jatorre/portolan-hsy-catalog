@@ -3,8 +3,9 @@
   "stac_version": "1.0.0",
   "id": "hsy",
   "title": "🏙️ Helsinki Region — HSY (Portolan catalog)",
-  "description": "A Portolan spatial-data catalog published as a git repository served over GitHub Pages — the repo IS the catalog. Regional planning data from Helsinki Region Environmental Services (HSY). Datasets are Apache Iceberg tables stored as static files alongside this STAC document; query them directly with DuckDB via `iceberg_scan('<the dataset's data.href>')` — no server, no REST catalog, no credentials. Contribute data or report issues via pull requests / issues on this repository (interim, NOT sovereign — see README).",
-  "portolan:catalog_type": "iceberg-static",
+  "description": "A Portolan spatial-data catalog whose SOURCE is this git repository (STAC + Apache Iceberg table files) and which is PUBLISHED to an object-storage bucket as a static Iceberg REST catalog. Regional planning data from Helsinki Region Environmental Services (HSY). Two ways to read it, no server in either: ATTACH the bucket endpoint as an Iceberg REST catalog (DuckDB or Snowflake), or iceberg_scan() a dataset's metadata.json directly. Contribute data or report issues via pull requests / issues on this repository — a merge re-publishes to the bucket automatically.",
+  "portolan:catalog_type": "iceberg-rest-static",
+  "portolan:iceberg_endpoint": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog",
   "portolan:datasets": 1,
   "extent": {
     "spatial": { "bbox": [[24.15, 60.08, 24.8, 60.4]] }
