@@ -1,0 +1,44 @@
+{
+  "type": "Feature",
+  "stac_version": "1.1.0",
+  "id": "seuturamava_kortteli",
+  "collection": "hsy-maankaytto",
+  "bbox": [24.15, 60.08, 24.8, 60.4],
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [[[24.15, 60.08], [24.8, 60.08], [24.8, 60.4], [24.15, 60.4], [24.15, 60.08]]]
+  },
+  "properties": {
+    "title": "Zoning · building-rights reserve",
+    "description": "HSY per-plan-block land-use category and unused building-rights reserve (SeutuRAMAVA), aggregated from the municipal detailed plans across Espoo / Vantaa / Kauniainen.",
+    "keywords": ["zoning", "land-use plan", "building rights", "spatial planning"],
+    "item_type": "feature",
+    "crs": "OGC:CRS84",
+    "materialized": true,
+    "data_format": "iceberg",
+    "provider": "Helsinki Region Environmental Services (HSY)",
+    "license": "CC-BY-4.0",
+    "datetime": null,
+    "semantics": {
+      "spec": "Open Semantic Interchange",
+      "label": "Zoning · building-rights reserve",
+      "describes": "HSY per-plan-block land-use category and unused building-rights reserve.",
+      "answers": "permitted land use & building-rights reserve",
+      "unit": "m² floor area"
+    }
+  },
+  "assets": {
+    "data": {
+      "href": "https://jatorre.github.io/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json",
+      "type": "application/vnd.apache.iceberg+json",
+      "roles": ["data"],
+      "title": "Apache Iceberg table (static files) — read with DuckDB iceberg_scan()",
+      "portolan:access": "iceberg_scan"
+    }
+  },
+  "links": [
+    { "rel": "root", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
+    { "rel": "parent", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
+    { "rel": "collection", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" }
+  ]
+}

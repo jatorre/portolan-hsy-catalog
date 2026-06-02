@@ -1,0 +1,26 @@
+{
+  "type": "Catalog",
+  "stac_version": "1.0.0",
+  "id": "hsy",
+  "title": "🏙️ Helsinki Region — HSY (Portolan catalog)",
+  "description": "A Portolan spatial-data catalog published as a git repository served over GitHub Pages — the repo IS the catalog. Regional planning data from Helsinki Region Environmental Services (HSY). Datasets are Apache Iceberg tables stored as static files alongside this STAC document; query them directly with DuckDB via `iceberg_scan('<the dataset's data.href>')` — no server, no REST catalog, no credentials. Contribute data or report issues via pull requests / issues on this repository (interim, NOT sovereign — see README).",
+  "portolan:catalog_type": "iceberg-static",
+  "portolan:datasets": 1,
+  "extent": {
+    "spatial": { "bbox": [[24.15, 60.08, 24.8, 60.4]] }
+  },
+  "portolan:contributions": {
+    "via": "github",
+    "sovereign": false,
+    "repo": "https://github.com/jatorre/portolan-hsy-catalog",
+    "issues_url": "https://github.com/jatorre/portolan-hsy-catalog/issues",
+    "accepts": ["issue", "pull_request"],
+    "note": "INTERIM / NOT SOVEREIGN — GitHub Pages is US-hosted (Fastly CDN). Demonstrates the repo-as-catalog model; the sovereign form is the same static files on EU infrastructure (e.g. UpCloud object storage, or self-hosted Forgejo Pages)."
+  },
+  "links": [
+    { "rel": "root", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json", "title": "HSY — Portolan catalog" },
+    { "rel": "self", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
+    { "rel": "item", "href": "https://jatorre.github.io/portolan-hsy-catalog/items/seuturamava_kortteli.json", "type": "application/geo+json", "title": "Zoning · building-rights reserve" },
+    { "rel": "feedback", "href": "https://github.com/jatorre/portolan-hsy-catalog/issues", "type": "text/html", "title": "Report issues or contribute data (GitHub — interim, not sovereign)" }
+  ]
+}
