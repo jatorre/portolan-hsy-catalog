@@ -41,12 +41,23 @@ def discover_tables():
 
 
 def main():
-    # 1) mirror the collision-free data files (parquet + iceberg metadata) verbatim
-    print("mirroring data/ ->", MC_TARGET + "/data/")
-    subprocess.run(["mc", "mirror", "--overwrite", "--remove", "data/", f"{MC_TARGET}/data/"],
-                   check=True)
-
     tables = discover_tables()
+
+    # 1) Mirror only the Iceberg METADATA (small: metadata.json + manifests) from git.
+    #    The DATA bytes (parquet) live ONLY on the bucket and are uploaded out-of-band
+    #    (see README "Contributing data"), so we never push or prune them here.
+    print("mirroring metadata ->", MC_TARGET + "/data/  (data/*.parquet excluded)")
+    subprocess.run(["mc", "mirror", "--overwrite", "data/", f"{MC_TARGET}/data/",
+                    "--exclude", "**/data/**"], check=True)
+
+    # sanity: warn (don't fail) if a table's data bytes aren't on the bucket yet
+    for ns, tbls in tables.items():
+        for table in tbls:
+            r = subprocess.run(["mc", "ls", f"{MC_TARGET}/data/{ns}/{table}/data/"],
+                               capture_output=True, text=True)
+            if r.returncode != 0 or not r.stdout.strip():
+                print(f"  ::warning:: no data bytes on bucket for {ns}.{table} — "
+                      f"upload the parquet to {MC_TARGET}/data/{ns}/{table}/data/")
 
     # 2) generate the Iceberg REST catalog responses, write them as object keys
     print("generating REST catalog tree")

@@ -3,12 +3,16 @@
 A [Portolan](https://github.com/portolan-sdi/portolan) spatial-data infrastructure node where
 **the git repository is the catalog's source**, and a bucket is its serving layer.
 
-- **This repo is the source of truth** — STAC metadata + the Apache Iceberg table files
-  (`metadata.json`, manifests, GeoParquet). All normal, collision-free file paths. You
-  contribute data or fix metadata the way you contribute to software: **open an issue or a PR.**
-- **On every merge, a GitHub Action publishes to an object-storage bucket** — it mirrors the
-  data files and *generates* the Apache Iceberg REST catalog (`/v1/config`, `/v1/.../namespaces`,
-  `/v1/.../tables`) as object keys. That bucket is then a fully static, server-less Iceberg
+- **This repo holds the catalog *definition*, not the data bytes** — STAC (`catalog.json`,
+  `items/`) + the small Apache Iceberg *metadata* (`metadata.json` + manifests, a few KB each).
+  No parquet. You fix metadata or propose datasets the way you contribute to software:
+  **open an issue or a PR.**
+- **The data bytes live on the object-storage bucket**, never in git. Iceberg metadata in the
+  repo points at the parquet by its bucket URL. (Git versions kilobytes of definition; the
+  bucket holds gigabytes of data — see *Where the data lives*.)
+- **On every merge, a GitHub Action publishes to the bucket** — it mirrors the metadata and
+  *generates* the Apache Iceberg REST catalog (`/v1/config`, `/v1/.../namespaces`,
+  `/v1/.../tables`) as object keys. The bucket is then a fully static, server-less Iceberg
   catalog you can **`ATTACH`** from DuckDB *or* Snowflake.
 
 It holds one dataset from **Helsinki Region Environmental Services (HSY)**: `seuturamava_kortteli`
@@ -55,14 +59,31 @@ in git — which is exactly why `ATTACH` works against the bucket but couldn't f
 ## Layout
 
 ```
-catalog.json                              STAC Catalog (source)
+catalog.json                              STAC Catalog (definition)
 items/seuturamava_kortteli.json           STAC Item — metadata, bbox, semantics, endpoints
-data/v2/hsy_zoning/                        Apache Iceberg table (source files)
-  metadata/v1.metadata.json, *.avro
-  data/hsy_zoning.parquet
-tools/publish.py                          generates the REST catalog + pushes to the bucket
+data/v2/hsy_zoning/metadata/              Apache Iceberg metadata — IN GIT
+  v1.metadata.json, *.avro                  (points at the parquet by bucket URL)
+data/v2/hsy_zoning/data/*.parquet         the data bytes — ON THE BUCKET ONLY (git-ignored)
+tools/publish.py                          mirrors metadata + generates the REST catalog
 .github/workflows/publish.yml             runs publish.py on every merge
 ```
+
+## Where the data lives
+
+Git holds the **definition** (STAC + Iceberg metadata, kilobytes). The object-storage bucket
+holds the **data** (the GeoParquet, and a copy of the metadata + the generated REST catalog).
+The data bytes are never committed to git — `data/**/data/` is git-ignored. This is what lets
+the model scale: a catalog of terabytes is still a tiny, diffable, PR-able git repo.
+
+## Contributing data
+
+- **Fix metadata / propose a dataset:** open a PR or issue — that's a normal git change to the
+  definition, reviewed and merged, then auto-published.
+- **Add or update the actual data bytes:** upload the GeoParquet to the bucket under
+  `…/data/<namespace>/<table>/data/`, then commit the matching Iceberg metadata
+  (`metadata.json` + manifests, pointing at that bucket URL) in a PR. On merge, the Action
+  republishes the REST catalog. (A PR cannot carry the bytes — that's deliberate; the bytes
+  go to the store, the *pointer* goes through review.)
 
 ## Publishing (what the Action does)
 
