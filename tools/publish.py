@@ -85,6 +85,14 @@ def main():
                 "config": {},
             }))
 
+    # 3) mirror the catalogue metadata documents (STAC + OGC API - Records views).
+    #    Same GeoJSON model, two vocabularies — both served as static files on the bucket.
+    print("mirroring catalogue docs (STAC catalog.json/items + OGC API - Records records/)")
+    subprocess.run(["mc", "cp", "catalog.json", f"{MC_TARGET}/catalog.json"], check=True)
+    for d in ("items", "records"):
+        if os.path.isdir(d):
+            subprocess.run(["mc", "mirror", "--overwrite", f"{d}/", f"{MC_TARGET}/{d}/"], check=True)
+
     print(f"\nPublished. ATTACH endpoint:\n  {PUBLIC_BASE}")
     print("  ATTACH 'cat' (TYPE iceberg, ENDPOINT '%s', AUTHORIZATION_TYPE 'none');" % PUBLIC_BASE)
 

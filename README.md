@@ -103,6 +103,25 @@ and here it is EU object storage (UpCloud 🇫🇮). The same repo can publish t
 bucket — on-prem MinIO, another EU provider — by changing two values. Hosting is a choice;
 the catalog is portable.
 
+## Standards: STAC *and* OGC API - Records
+
+This catalogue is published in both vocabularies, because they're the same model — GeoJSON
+`Feature`s and Collections, built on the OGC API - Features foundation (and STAC is itself an
+OGC Community Standard since 2025):
+
+- **STAC** — [`catalog.json`](catalog.json) + [`items/`](items/)
+- **OGC API - Records** — [`records/catalog.json`](records/catalog.json) +
+  [`records/seuturamava_kortteli.json`](records/seuturamava_kortteli.json)
+
+The Records record is the STAC item with OGC field names: `properties.datetime` → top-level
+`time`, `assets` → `links`, `providers` → `contacts`, plus `properties.type` and `conformsTo`;
+OSI semantics map to `themes`. Portolan-specific fields stay as namespaced `portolan:*`
+properties (a small building-block extension with its own JSON-LD context).
+
+> **Described by OGC, queried by everyone.** Portolan carries the OGC lineage — STAC and OGC API
+> - Records for meaning and discovery — onto the open analytics foundation (Apache Iceberg,
+> GeoParquet, DuckDB/Snowflake), so geospatial keeps its standards yet stops being a silo.
+
 ## Part of a federation
 
 One child of the Portolan Helsinki *catalog of catalogs*:

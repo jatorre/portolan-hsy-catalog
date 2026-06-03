@@ -41,6 +41,7 @@
   "links": [
     { "rel": "root", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
     { "rel": "parent", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
-    { "rel": "collection", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" }
+    { "rel": "collection", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
+    { "rel": "alternate", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/records/seuturamava_kortteli.json", "type": "application/geo+json", "title": "Same record as OGC API - Records" }
   ]
 }

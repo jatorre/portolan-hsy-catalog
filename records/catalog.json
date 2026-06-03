@@ -1,0 +1,15 @@
+{
+  "id": "portolan-hsy",
+  "type": "Catalog",
+  "conformsTo": [
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/conf/core",
+    "http://www.opengis.net/spec/ogcapi-records-1/1.0/conf/record-core"
+  ],
+  "title": "🏙️ Helsinki Region — HSY (OGC API - Records catalogue)",
+  "description": "OGC API - Records view of this Portolan catalogue. The same datasets and metadata as the STAC catalog (../catalog.json), expressed in the OGC API - Records record model — both are GeoJSON Features sharing the OGC API - Features foundation. Served as static cloud-native files; no catalogue server.",
+  "links": [
+    { "rel": "self", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/records/catalog.json", "type": "application/json" },
+    { "rel": "items", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/records/seuturamava_kortteli.json", "type": "application/geo+json", "title": "Zoning · building-rights reserve" },
+    { "rel": "alternate", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/catalog.json", "type": "application/json", "title": "Same catalogue as a STAC Catalog" }
+  ]
+}

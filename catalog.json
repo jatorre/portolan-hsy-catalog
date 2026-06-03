@@ -21,6 +21,7 @@
     { "rel": "root", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json", "title": "HSY — Portolan catalog" },
     { "rel": "self", "href": "https://jatorre.github.io/portolan-hsy-catalog/catalog.json", "type": "application/json" },
     { "rel": "item", "href": "https://jatorre.github.io/portolan-hsy-catalog/items/seuturamava_kortteli.json", "type": "application/geo+json", "title": "Zoning · building-rights reserve" },
+    { "rel": "alternate", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/records/catalog.json", "type": "application/json", "title": "Same catalogue as OGC API - Records" },
     { "rel": "feedback", "href": "https://github.com/jatorre/portolan-hsy-catalog/issues", "type": "text/html", "title": "Report issues or contribute data (GitHub — interim, not sovereign)" }
   ]
 }
