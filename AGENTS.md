@@ -7,9 +7,12 @@ If you are an agent that needs to **use** this data or **contribute** to it, rea
 ## What this publisher offers
 
 - **Publisher:** Helsinki Region Environmental Services (HSY)
-- **Datasets:** 1 — `v2.hsy_zoning` — *Zoning · building-rights reserve* (SeutuRAMAVA):
-  per-plan-block land-use category + unused building-rights reserve, polygons, CRS `OGC:CRS84`.
-- **License:** CC-BY-4.0.
+- **Datasets:** 1 — *Zoning · building-rights reserve* (SeutuRAMAVA): per-plan-block land-use
+  category + unused building-rights reserve, polygons, CRS `OGC:CRS84`. Two Iceberg
+  representations: `v2.hsy_zoning` (WKB geometry in `geom_wkb` + bbox columns) and `v3.hsy_zoning`
+  (native Iceberg `GEOMETRY` column `geom`). A `catalog.datasets` table is the STAC index.
+- **License:** data CC-BY-4.0 (© HSY); tooling Apache-2.0 — see `LICENSE`. Provenance is in the
+  STAC item under `properties.portolan:provenance`.
 - **Catalog endpoint (Iceberg REST, static):**
   `https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog`
 

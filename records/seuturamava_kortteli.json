@@ -23,12 +23,22 @@
       { "name": "Helsinki Region Environmental Services (HSY)", "roles": ["provider"] }
     ],
     "license": "CC-BY-4.0",
+    "created": "2026-06-03T00:00:00Z",
     "portolan:iceberg_endpoint": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog",
-    "portolan:iceberg_table": "v2.hsy_zoning"
+    "portolan:iceberg_table": "v2.hsy_zoning",
+    "portolan:provenance": {
+      "source": "HSY SeutuRAMAVA — building-land reserve, derived from the municipal detailed plans of Espoo, Vantaa and Kauniainen",
+      "source_provider": "Helsinki Region Environmental Services (HSY)",
+      "source_license": "CC-BY-4.0",
+      "processing": "Aggregated per detailed-plan block; converted to Apache Iceberg by Portolan in two representations — v2 (WKB) and v3 (native GEOMETRY).",
+      "processed_by": "Portolan",
+      "processed": "2026-06-03"
+    }
   },
   "links": [
     { "rel": "root", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/records/catalog.json", "type": "application/json", "title": "HSY — Portolan catalogue (OGC API - Records)" },
     { "rel": "self", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/records/seuturamava_kortteli.json", "type": "application/geo+json" },
-    { "rel": "item", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json", "type": "application/vnd.apache.iceberg+json", "title": "Apache Iceberg table — iceberg_scan() this, or ATTACH the catalog endpoint" }
+    { "rel": "item", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/data/v2/hsy_zoning/metadata/v1.metadata.json", "type": "application/vnd.apache.iceberg+json", "title": "Apache Iceberg table (v2 — WKB) — iceberg_scan() this, or ATTACH the catalog endpoint" },
+    { "rel": "item", "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/data/v3/hsy_zoning/metadata/v1.metadata.json", "type": "application/vnd.apache.iceberg+json", "title": "Apache Iceberg table (v3 — native GEOMETRY)" }
   ]
 }

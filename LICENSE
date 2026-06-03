@@ -1,0 +1,29 @@
+This repository contains two kinds of material under two licenses.
+
+============================================================================
+1. DATA and METADATA  —  CC BY 4.0
+============================================================================
+The spatial data published by this catalog and its descriptive metadata
+(STAC and OGC API - Records documents, Apache Iceberg tables, GeoParquet)
+are licensed under the Creative Commons Attribution 4.0 International
+License (CC BY 4.0).
+
+    SPDX-License-Identifier: CC-BY-4.0
+    Full text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Attribution:
+    Dataset "Zoning · building-rights reserve" (SeutuRAMAVA) ©
+    Helsinki Region Environmental Services (HSY), derived from the municipal
+    detailed plans of Espoo, Vantaa and Kauniainen. Published via Portolan.
+
+When you use the data, you must give appropriate credit to HSY as the
+source and indicate if changes were made.
+
+============================================================================
+2. CATALOG TOOLING (code)  —  Apache 2.0
+============================================================================
+The publishing tooling in this repository (e.g. tools/publish.py and the
+GitHub Actions workflow) is licensed under the Apache License, Version 2.0.
+
+    SPDX-License-Identifier: Apache-2.0
+    Full text: https://www.apache.org/licenses/LICENSE-2.0

@@ -17,7 +17,10 @@ A [Portolan](https://github.com/portolan-sdi/portolan) spatial-data infrastructu
 
 It holds one dataset from **Helsinki Region Environmental Services (HSY)**: `seuturamava_kortteli`
 — per-plan-block land-use category and unused building-rights reserve (SeutuRAMAVA), across
-Espoo / Vantaa / Kauniainen.
+Espoo / Vantaa / Kauniainen — in two Iceberg representations: **`v2.hsy_zoning`** (WKB geometry +
+bbox columns) and **`v3.hsy_zoning`** (native Iceberg `GEOMETRY`). Provenance is recorded in the
+STAC item (`properties.portolan:provenance`). Licensing is in [`LICENSE`](LICENSE): data CC-BY-4.0
+(© HSY), tooling Apache-2.0.
 
 ## Read it — two ways, no server in either
 
@@ -61,9 +64,11 @@ in git — which is exactly why `ATTACH` works against the bucket but couldn't f
 ```
 catalog.json                              STAC Catalog (definition)
 items/seuturamava_kortteli.json           STAC Item — metadata, bbox, semantics, endpoints
-data/v2/hsy_zoning/metadata/              Apache Iceberg metadata — IN GIT
-  v1.metadata.json, *.avro                  (points at the parquet by bucket URL)
-data/v2/hsy_zoning/data/*.parquet         the data bytes — ON THE BUCKET ONLY (git-ignored)
+data/v2/hsy_zoning/metadata/              Iceberg metadata, v2 = WKB geometry — IN GIT
+data/v3/hsy_zoning/metadata/              Iceberg metadata, v3 = native GEOMETRY — IN GIT
+data/catalog/datasets/metadata/           Iceberg metadata for the STAC index table — IN GIT
+data/**/data/*.parquet                    the data bytes — ON THE BUCKET ONLY (git-ignored)
+LICENSE                                   CC-BY-4.0 (data) + Apache-2.0 (tooling)
 tools/publish.py                          mirrors metadata + generates the REST catalog
 .github/workflows/publish.yml             runs publish.py on every merge
 ```
