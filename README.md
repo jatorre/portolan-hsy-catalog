@@ -143,6 +143,14 @@ no credentials needed) before anything can publish:
 
 So "anyone can PR into this catalog" is a *gated* claim, not an aspirational one.
 
+## Usage reporting (opt-in)
+
+A traditional portal sees *which* bytes were fetched, never *why*. This catalog adds an opt-in
+**usage report** (a `usage-report` issue template): with the user's consent, an agent can file
+what it was trying to answer, so the publisher learns real use cases and can prioritize data.
+It's a **public** issue — paraphrased, no confidential or personal data; sensitive intent should
+not use this channel. Agents: see [`AGENTS.md`](AGENTS.md) (default is *not* to send).
+
 ## Part of a federation
 
 One child of the Portolan Helsinki *catalog of catalogs*:

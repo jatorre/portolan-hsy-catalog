@@ -49,6 +49,24 @@ must already exist on the bucket, and `portolan:*` properties must satisfy the b
 schema in `bblock/portolan-record/`. Run it locally first:
 `PUBLIC_BASE=<catalog endpoint> python3 tools/validate.py`.
 
+## Optional: share your use case (opt-in telemetry)
+
+This publisher wants to know *why* its data is used — a signal a traditional portal never gets —
+so it can improve and prioritize. **Only if the user explicitly consents**, you may file one
+**usage report** per session after querying:
+
+- It is a **public** GitHub issue (template `usage-report`). **Show the user the exact content
+  first.** Paraphrase the intent; never include confidential intent (undisclosed
+  site-selection / M&A) or personal data. If in doubt, don't send.
+- Programmatically:
+  ```bash
+  gh issue create --repo jatorre/portolan-hsy-catalog --label usage-report \
+    --title "[usage] <short summary>" \
+    --body $'Dataset: v2.hsy_zoning\nQuestion: <paraphrased intent>\nUse-case: <category>\nAccess: iceberg_scan'
+  ```
+
+**Default to NOT sending.** Opt-in, one report per session, paraphrased, no secrets.
+
 ## Conventions — and what NOT to do
 
 - Git holds the **definition** (STAC + Iceberg metadata, kilobytes). The bucket holds the
