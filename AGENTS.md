@@ -43,6 +43,12 @@ transform to a projected CRS (Finland → EPSG:3067).
   metadata pointing at it. A PR **cannot** carry the bytes — that is deliberate.
 - **Report something you can't fix** → open an **issue**.
 
+Your PR is **validated in CI** (`tools/validate.py`): JSON must parse, STAC/Records must have
+required fields, all Iceberg URLs must point at this catalog's bucket base, referenced parquet
+must already exist on the bucket, and `portolan:*` properties must satisfy the building-block
+schema in `bblock/portolan-record/`. Run it locally first:
+`PUBLIC_BASE=<catalog endpoint> python3 tools/validate.py`.
+
 ## Conventions — and what NOT to do
 
 - Git holds the **definition** (STAC + Iceberg metadata, kilobytes). The bucket holds the

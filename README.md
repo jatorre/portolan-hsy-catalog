@@ -127,6 +127,22 @@ properties (a small building-block extension with its own JSON-LD context).
 > - Records for meaning and discovery — onto the open analytics foundation (Apache Iceberg,
 > GeoParquet, DuckDB/Snowflake), so geospatial keeps its standards yet stops being a silo.
 
+## Validation & building-block conformance
+
+Every pull request is validated in CI (`tools/validate.py` via `.github/workflows/validate.yml`,
+no credentials needed) before anything can publish:
+
+- every JSON parses; STAC items and OGC API - Records records have their required fields;
+- all Iceberg metadata/manifest URLs point at this catalog's bucket base (catches mis-relocated
+  tables — the bug that silently breaks `ATTACH`);
+- referenced GeoParquet **actually exists on the bucket** (enforces "upload data, then PR the
+  metadata");
+- the `portolan:*` properties validate against the **OGC building block** in
+  [`bblock/portolan-record/`](bblock/) (`schema.json` + JSON-LD `context.jsonld`), which extends
+  `ogc.api.records.v1.0.record-core`.
+
+So "anyone can PR into this catalog" is a *gated* claim, not an aspirational one.
+
 ## Part of a federation
 
 One child of the Portolan Helsinki *catalog of catalogs*:
