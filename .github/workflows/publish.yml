@@ -1,0 +1,94 @@
+name: Publish to bucket
+
+# Spec-aware publish for a git-backed Portolan catalog.
+# On a change to the STAC definition, validate it and mirror the metadata to the catalog's
+# bucket prefix. ADDITIVE ONLY — never deletes the Iceberg REST layer (v1/) or data (data/),
+# so the live ATTACH endpoint is never disturbed. Data bytes live on the bucket (model 3) and
+# are not in git, so this publishes the definition (catalog.json / collections / versions).
+#
+# Requires repo secrets UPCLOUD_ACCESS_KEY / UPCLOUD_SECRET_KEY. The bucket prefix is derived
+# from the repo name: carto-ogc-connect-helsinki/repo/<repo-name>.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'catalog.json'
+      - 'versions.json'
+      - '**/collection.json'
+      - '**/versions.json'
+      - '.github/workflows/publish.yml'
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate the catalog definition
+        run: |
+          python3 - <<'PY'
+          import json, glob, sys
+          errs = []
+          for f in glob.glob("**/*.json", recursive=True):
+              if f.startswith(".portolan/"):
+                  continue
+              try:
+                  json.load(open(f))
+              except Exception as e:
+                  errs.append(f"{f}: invalid JSON — {e}")
+          try:
+              c = json.load(open("catalog.json"))
+              if c.get("type") != "Catalog":
+                  errs.append("catalog.json: type must be 'Catalog'")
+              if not c.get("git:repository"):
+                  errs.append("catalog.json: missing git:repository (git-backed-catalog extension)")
+          except Exception as e:
+              errs.append(f"catalog.json: {e}")
+          for cj in glob.glob("*/collection.json"):
+              try:
+                  d = json.load(open(cj))
+                  if d.get("type") != "Collection":
+                      errs.append(f"{cj}: type must be 'Collection'")
+              except Exception as e:
+                  errs.append(f"{cj}: {e}")
+          if errs:
+              print("\n".join("  ✗ " + e for e in errs)); sys.exit(1)
+          print("✓ catalog definition valid")
+          PY
+
+      - name: Gate on credentials
+        id: gate
+        env:
+          KEY: ${{ secrets.UPCLOUD_ACCESS_KEY }}
+        run: |
+          if [ -z "$KEY" ]; then
+            echo "::warning::No bucket credentials (secret UPCLOUD_ACCESS_KEY). Skipping publish."
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install mc
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          curl -sSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+          chmod +x /usr/local/bin/mc
+
+      - name: Publish metadata (additive)
+        if: steps.gate.outputs.skip != 'true'
+        run: |
+          set -e
+          mc alias set up https://8et4c.upcloudobjects.com \
+            "${{ secrets.UPCLOUD_ACCESS_KEY }}" "${{ secrets.UPCLOUD_SECRET_KEY }}"
+          B="up/carto-ogc-connect-helsinki/repo/${{ github.event.repository.name }}"
+          mc cp --attr "Content-Type=application/json" catalog.json "$B/catalog.json"
+          [ -f versions.json ] && mc cp versions.json "$B/versions.json" || true
+          for cj in */collection.json; do
+            d=$(dirname "$cj")
+            mc cp --attr "Content-Type=application/json" "$cj" "$B/$d/collection.json"
+            [ -f "$d/versions.json" ] && mc cp "$d/versions.json" "$B/$d/versions.json" || true
+          done
+          echo "Published STAC metadata for ${{ github.event.repository.name }} (v1/ and data/ untouched)."
