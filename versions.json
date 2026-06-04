@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0.0",
+  "catalog_id": "mig-hsy",
+  "created": "2026-06-04T08:27:15.709956+00:00",
+  "collections": {
+    "seuturamava_kortteli": {
+      "current_version": "1.0.0",
+      "updated": "2026-06-04T08:27:20.532408+00:00",
+      "asset_count": 1,
+      "total_size_bytes": 1609448
+    }
+  },
+  "updated": "2026-06-04T08:27:20.532408+00:00"
+}

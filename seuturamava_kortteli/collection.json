@@ -1,0 +1,163 @@
+{
+  "type": "Collection",
+  "id": "seuturamava_kortteli",
+  "stac_version": "1.1.0",
+  "description": "Collection: seuturamava_kortteli",
+  "links": [
+    {
+      "rel": "root",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Helsinki Region Environmental Services (HSY)"
+    },
+    {
+      "rel": "parent",
+      "href": "../catalog.json",
+      "type": "application/json",
+      "title": "Helsinki Region Environmental Services (HSY)"
+    },
+    {
+      "rel": "via",
+      "href": "https://www.hsy.fi/en/air-quality-and-climate/geographic-information/open-geographic-information-interfaces/",
+      "type": "text/html",
+      "title": "Helsinki Region Environmental Services (HSY) (source)"
+    }
+  ],
+  "stac_extensions": [
+    "https://stac-extensions.github.io/table/v1.2.0/schema.json",
+    "https://portolan-sdi.github.io/stac-iceberg-extension/v1.0.0/schema.json"
+  ],
+  "geoparquet:geometry_type": "Polygon",
+  "geoparquet:feature_count": 3997,
+  "table:row_count": 3997,
+  "table:primary_geometry": "geom",
+  "table:columns": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "kunta",
+      "type": "string"
+    },
+    {
+      "name": "korttunnus",
+      "type": "string"
+    },
+    {
+      "name": "kosa",
+      "type": "int32"
+    },
+    {
+      "name": "ktun",
+      "type": "string"
+    },
+    {
+      "name": "kala",
+      "type": "int32"
+    },
+    {
+      "name": "karayht",
+      "type": "int32"
+    },
+    {
+      "name": "karaas",
+      "type": "int32"
+    },
+    {
+      "name": "karamu",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_ak",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_ap",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_k",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_t",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_y",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_nn",
+      "type": "int32"
+    },
+    {
+      "name": "laskvar_yh",
+      "type": "int32"
+    },
+    {
+      "name": "rakeraas",
+      "type": "int32"
+    },
+    {
+      "name": "rakeramu",
+      "type": "int32"
+    },
+    {
+      "name": "rakerayht",
+      "type": "int32"
+    },
+    {
+      "name": "rekpvm",
+      "type": "string"
+    },
+    {
+      "name": "geom",
+      "type": "binary"
+    }
+  ],
+  "extent": {
+    "spatial": {
+      "bbox": [
+        [
+          24.51052702,
+          60.12413734,
+          24.80515611,
+          60.33180987
+        ]
+      ]
+    },
+    "temporal": {
+      "interval": [
+        [
+          null,
+          null
+        ]
+      ]
+    }
+  },
+  "license": "CC-BY-4.0",
+  "assets": {
+    "seuturamava_kortteli": {
+      "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/seuturamava_kortteli/seuturamava_kortteli.parquet",
+      "type": "application/x-parquet",
+      "roles": [
+        "data"
+      ]
+    },
+    "iceberg": {
+      "href": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog/data/v3/hsy_zoning",
+      "type": "application/x-iceberg",
+      "roles": [
+        "data"
+      ],
+      "title": "Apache Iceberg table v3.hsy_zoning — iceberg_scan() or ATTACH the catalog_uri"
+    }
+  },
+  "iceberg:catalog_type": "rest",
+  "iceberg:catalog_uri": "https://8et4c.upcloudobjects.com/carto-ogc-connect-helsinki/repo/portolan-hsy-catalog",
+  "iceberg:table_id": "v3.hsy_zoning",
+  "iceberg:current_snapshot_id": 1780392388148,
+  "git:edit_url": "https://github.com/jatorre/portolan-hsy-catalog/edit/main/seuturamava_kortteli/collection.json"
+}

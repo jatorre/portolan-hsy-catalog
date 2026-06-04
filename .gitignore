@@ -1,4 +1,4 @@
-# Data bytes live on the bucket, NOT in git (see README).
-# Git tracks only the catalog definition: STAC + Iceberg metadata (metadata.json + manifests).
-data/**/data/
+# Data bytes live on the bucket, NOT in git (model 3).
+# Git tracks only the catalog definition: catalog.json, versions.json,
+# <id>/collection.json, <id>/versions.json, and .portolan/.
 *.parquet
